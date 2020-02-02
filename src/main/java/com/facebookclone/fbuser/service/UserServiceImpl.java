@@ -202,8 +202,6 @@ public class UserServiceImpl implements UserService {
 
         HashSet<String> friendListIds = friend.getFriendIds();
         userListIds.retainAll(friendListIds);
-
-
         List<User> userList = new ArrayList<>();
         Iterable<User> iterable = userRepository.findAllById(userListIds);
         iterable.forEach(userList::add);

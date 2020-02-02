@@ -48,7 +48,7 @@ public class UserController {
 
     }
 
-    @PostMapping("  ")
+    @PostMapping("/sendFriendRequest")
     ResponseEntity<BaseResponse> sendFriendRequest(@RequestBody FriendRequestDTO friendRequestDTO, @RequestHeader HttpHeaders httpHeaders) {
 
         userService.sendFriendRequest(friendRequestDTO);

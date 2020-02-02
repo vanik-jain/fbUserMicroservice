@@ -16,5 +16,4 @@ public class BusinessUserDTO
     private String businessName;
     private String businessImageUrl;
     private String email;
-
 }
