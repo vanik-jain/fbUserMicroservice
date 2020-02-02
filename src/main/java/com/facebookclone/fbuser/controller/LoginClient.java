@@ -3,7 +3,6 @@ package com.facebookclone.fbuser.controller;
 import com.facebookclone.fbuser.dto.TokenRequest;
 import com.facebookclone.fbuser.response.TokenResponse;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

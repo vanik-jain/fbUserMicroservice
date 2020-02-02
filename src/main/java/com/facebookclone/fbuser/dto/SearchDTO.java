@@ -5,7 +5,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.Date;
-
+import java.util.HashSet;
+import java.util.List;
 
 
 @Getter
@@ -18,8 +19,13 @@ public class SearchDTO
     private String imageUrl;
     private String gender;
     private String email;
-    private Date DOB;
+    private String DOB;
     private Long mobileNumber;
+    private List<String> interests;
+    private String profileType;
+    private String displayType;
+    private HashSet<String> friendIds;
+    private HashSet<String> pendingFriendIds;
 
 
 }

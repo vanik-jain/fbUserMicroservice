@@ -39,8 +39,8 @@ public class UserController {
 
         Long providerId = Long.valueOf(1);
         TokenRequest tokenRequest = new TokenRequest(providerId);
-       TokenResponse tokenResponse =loginClient.getUserDetails(authToken,tokenRequest);
-       Long userId = tokenResponse.getId();
+        TokenResponse tokenResponse = loginClient.getUserDetails(authToken, tokenRequest);
+        Long userId = tokenResponse.getId();
         userDTO.setUserId(userId.toString());
         BeanUtils.copyProperties(userDTO, user);
         UserDTO userDTO1 = userService.saveUser(user);
@@ -60,6 +60,7 @@ public class UserController {
     @PostMapping("/acceptFriendRequest")
     ResponseEntity<BaseResponse> acceptFriendRequest(@RequestBody FriendRequestDTO friendRequestDTO, @RequestHeader HttpHeaders httpHeaders) {
 
+        userService.acceptFriendRequest(friendRequestDTO);
         BaseResponse baseResponse = new BaseResponse();
         return new ResponseEntity<>(baseResponse, HttpStatus.CREATED);
     }
@@ -88,17 +89,16 @@ public class UserController {
 
 
     @PostMapping("/addBusinessDetails")
-    BaseResponse<BusinessUserDTO> addBusinessDetails(@RequestBody BusinessUser businessUser, @RequestHeader HttpHeaders httpHeaders) {
+    BaseResponse<BusinessUserDTO>  addBusinessDetails(@RequestBody BusinessUser businessUser, @RequestHeader HttpHeaders httpHeaders) {
         BusinessUserDTO businessUserDTO = userService.saveBusinessUser(businessUser);
         return new BaseResponse<>(true, "null", businessUserDTO, HttpStatus.CREATED);
     }
 
 
-
     @GetMapping("/getBusinessUserDetails/{businessUserId}")
-    BaseResponse<BusinessUserDTO>getBusinessUserDetails(@PathVariable String businessUserId)
+    BaseResponse<BusinessUserDTO> getBusinessUserDetails(@PathVariable String businessUserId)
     {
-return null;
+        return null;
     }
 
 }

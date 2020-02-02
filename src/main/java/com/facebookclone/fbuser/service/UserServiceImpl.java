@@ -3,10 +3,8 @@ package com.facebookclone.fbuser.service;
 
 import com.facebookclone.fbuser.collections.BusinessUser;
 import com.facebookclone.fbuser.collections.User;
-import com.facebookclone.fbuser.dto.BusinessUserDTO;
-import com.facebookclone.fbuser.dto.FriendRequestDTO;
-import com.facebookclone.fbuser.dto.SearchDTO;
-import com.facebookclone.fbuser.dto.UserDTO;
+import com.facebookclone.fbuser.controller.FeedClient;
+import com.facebookclone.fbuser.dto.*;
 import com.facebookclone.fbuser.repository.BusinessUserRepository;
 import com.facebookclone.fbuser.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,7 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.kafka.support.KafkaHeaders.TOPIC;
+
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -33,6 +31,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     KafkaTemplate<String, String> kafkaTemplate;
+    @Autowired
+    FeedClient feedClient;
 
     @Override
     public UserDTO saveUser(User user) {
@@ -43,10 +43,16 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(user1, userDTO);
         SearchDTO searchDTO = new SearchDTO();
         BeanUtils.copyProperties(user1, searchDTO);
+        FeedDTO feedDTO = new FeedDTO();
+        feedDTO.setUserId(user.getUserId());
+        feedDTO.setUserName(user.getUserName());
+        feedDTO.setImageUrl(user.getImageUrl());
+//        feedClient.createNewFeed(feedDTO);
 
         try {
-            kafkaTemplate.send("kafka3", (new ObjectMapper()).writeValueAsString(searchDTO));
-        } catch (JsonProcessingException e) {
+            kafkaTemplate.send("facebook", (new ObjectMapper()).writeValueAsString(searchDTO));
+        } catch (JsonProcessingException e)
+        {
             e.printStackTrace();
         }
 
@@ -69,15 +75,17 @@ public class UserServiceImpl implements UserService {
 
         Optional<User> optionalUser = userRepository.findById(friendRequestDTO.getUserId());
         Optional<User> optionalFriend = userRepository.findById(friendRequestDTO.getFriendId());
-        User user;
-        User friend;
+        User user =null;
+        User friend = null;
 
         if (optionalUser.isPresent() && optionalFriend.isPresent()) {
             user = optionalUser.get();
             friend = optionalFriend.get();
-            if (user.getDisplayType().equals("public")) {
+            if (user.getDisplayType().equals("public"))
+            {
                 user.getFriendIds().add(friendRequestDTO.getFriendId());
                 friend.getFriendIds().add(friendRequestDTO.getUserId());
+
             } else {
                 user.getPendingFriendIds().add(friendRequestDTO.getFriendId());
             }
@@ -85,14 +93,17 @@ public class UserServiceImpl implements UserService {
 
         }
 
+        userRepository.save(user);
+        userRepository.save(friend);
+
     }
 
     @Override
     public void acceptFriendRequest(FriendRequestDTO friendRequestDTO) {
         Optional<User> optionalUser = userRepository.findById(friendRequestDTO.getUserId());
         Optional<User> optionalFriend = userRepository.findById(friendRequestDTO.getFriendId());
-        User user;
-        User friend;
+        User user = null;
+        User friend = null;
         if (optionalUser.isPresent() && optionalFriend.isPresent()) {
             user = optionalUser.get();
             friend = optionalFriend.get();
@@ -105,6 +116,9 @@ public class UserServiceImpl implements UserService {
             }
 
         }
+
+        userRepository.save(user);
+        userRepository.save(friend);
 
     }
 
@@ -145,12 +159,22 @@ public class UserServiceImpl implements UserService {
         Optional<User> optionalFriend = userRepository.findById(friendRequestDTO.getFriendId());
         User user = new User();
         User friend = new User();
-        if (optionalUser.isPresent() && optionalFriend.isPresent()) {
+        Boolean isFriend = false;
+
+        if (optionalUser.isPresent() && optionalFriend.isPresent())
+        {
             user = optionalUser.get();
             friend = optionalFriend.get();
         }
 
         HashSet<String> userListIds = user.getFriendIds();
+
+
+       if (userListIds.contains(friendRequestDTO.getFriendId()))
+       {
+           isFriend= true;
+       }
+
         HashSet<String> friendListIds = friend.getFriendIds();
         userListIds.retainAll(friendListIds);
 
