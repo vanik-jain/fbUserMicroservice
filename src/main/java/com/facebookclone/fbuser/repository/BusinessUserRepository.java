@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BusinessUserRepository extends MongoRepository<BusinessUser,String>
 {
-
+    BusinessUser findByAdminId(String adminId);
 }

@@ -43,11 +43,11 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(user1, userDTO);
         SearchDTO searchDTO = new SearchDTO();
         BeanUtils.copyProperties(user1, searchDTO);
-        FeedDTO feedDTO = new FeedDTO();
-        feedDTO.setUserId(user.getUserId());
-        feedDTO.setUserName(user.getUserName());
-        feedDTO.setImageUrl(user.getImageUrl());
-//        feedClient.createNewFeed(feedDTO);
+        NewUserDataDto newUserDataDto = new NewUserDataDto();
+        newUserDataDto.setUserId(user.getUserId());
+        newUserDataDto.setUserName(user.getUserName());
+        newUserDataDto.setImageUrl(user.getImageUrl());
+        feedClient.createNewFeed(newUserDataDto);
 
         try {
             kafkaTemplate.send("facebook", (new ObjectMapper()).writeValueAsString(searchDTO));
@@ -83,8 +83,31 @@ public class UserServiceImpl implements UserService {
             friend = optionalFriend.get();
             if (user.getDisplayType().equals("public"))
             {
-                user.getFriendIds().add(friendRequestDTO.getFriendId());
-                friend.getFriendIds().add(friendRequestDTO.getUserId());
+
+
+
+                if( user.getFriendIds() != null)
+                {
+                    user.getFriendIds().add(friendRequestDTO.getFriendId());
+                }
+                else {
+
+                    HashSet<String> friendIds = new HashSet<>();
+                    friendIds.add(friendRequestDTO.getUserId());
+                    user.setFriendIds(friendIds);
+                }
+
+
+                if( friend.getFriendIds() != null)
+                {
+                    friend.getFriendIds().add(friendRequestDTO.getUserId());
+                }
+                else {
+
+                    HashSet<String> friendIds = new HashSet<>();
+                    friendIds.add(friendRequestDTO.getUserId());
+                    friend.setFriendIds(friendIds);
+                }
 
             } else {
                 user.getPendingFriendIds().add(friendRequestDTO.getFriendId());
@@ -131,6 +154,7 @@ public class UserServiceImpl implements UserService {
         }
         HashSet<String> friendIDs = user.getFriendIds();
         List<User> userList = new ArrayList<>();
+         friendIDs.remove("");
         Iterable<User> iterable = userRepository.findAllById(friendIDs);
         iterable.forEach(userList::add);
         return userList;
@@ -148,8 +172,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BusinessUser findBusinessUserById(String BusinessUserId) {
-        return null;
+    public BusinessUser findBusinessUserById(String BusinessUserId)
+    {
+        return businessUserRepository.findByAdminId(BusinessUserId);
     }
 
     @Override

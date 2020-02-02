@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FeedDTO
+public class NewUserDataDto
 {
    private String userId;
    private String userName;

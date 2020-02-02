@@ -48,7 +48,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/sendFriendRequest")
+    @PostMapping("  ")
     ResponseEntity<BaseResponse> sendFriendRequest(@RequestBody FriendRequestDTO friendRequestDTO, @RequestHeader HttpHeaders httpHeaders) {
 
         userService.sendFriendRequest(friendRequestDTO);
@@ -89,16 +89,19 @@ public class UserController {
 
 
     @PostMapping("/addBusinessDetails")
-    BaseResponse<BusinessUserDTO>  addBusinessDetails(@RequestBody BusinessUser businessUser, @RequestHeader HttpHeaders httpHeaders) {
+    BaseResponse<BusinessUserDTO>  addBusinessDetails(@RequestBody BusinessUser businessUser, @RequestHeader HttpHeaders httpHeaders)
+    {
         BusinessUserDTO businessUserDTO = userService.saveBusinessUser(businessUser);
         return new BaseResponse<>(true, "null", businessUserDTO, HttpStatus.CREATED);
     }
 
 
     @GetMapping("/getBusinessUserDetails/{businessUserId}")
-    BaseResponse<BusinessUserDTO> getBusinessUserDetails(@PathVariable String businessUserId)
+    BaseResponse<BusinessUser> getBusinessUserDetails(@PathVariable String businessUserId)
     {
-        return null;
+        BusinessUser businessUser=userService.findBusinessUserById(businessUserId);
+        return new BaseResponse<>(true,"null",businessUser,HttpStatus.CREATED);
+
     }
 
 }

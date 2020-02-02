@@ -14,13 +14,14 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class BusinessUser
-{
+public class BusinessUser {
     @Id
-   private String adminId;
-   private List<String> moderatorIds;
-   private String category;
-   private String status;
-
+    private String adminId;
+    private List<String> moderatorIds;
+    private String category;
+    private String status;
+    private String businessName;
+    private String businessImageUrl;
+    private String email;
 
 }

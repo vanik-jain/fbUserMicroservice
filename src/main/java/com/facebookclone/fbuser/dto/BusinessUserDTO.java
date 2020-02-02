@@ -13,5 +13,8 @@ public class BusinessUserDTO
     private List<String> moderatorIds;
     private String category;
     private String status;
+    private String businessName;
+    private String businessImageUrl;
+    private String email;
 
 }
