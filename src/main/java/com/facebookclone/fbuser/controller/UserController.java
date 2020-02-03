@@ -96,11 +96,12 @@ public class UserController {
     }
 
 
-    @GetMapping("/getBusinessUserDetails/{businessUserId}")
-    BaseResponse<BusinessUser> getBusinessUserDetails(@PathVariable String businessUserId)
-    {
-        BusinessUser businessUser=userService.findBusinessUserById(businessUserId);
-        return new BaseResponse<>(true,"null",businessUser,HttpStatus.CREATED);
+    @GetMapping("/getBusinessUserDetails/{adminId}")
+    BaseResponse<BusinessUserDTO> getBusinessUserDetails(@PathVariable String adminId)
+    {   BusinessUserDTO businessUserDTO=new BusinessUserDTO();
+        BusinessUser businessUser=userService.findBusinessUserById(adminId);
+        BeanUtils.copyProperties(businessUser,businessUserDTO);
+        return new BaseResponse<>(true,"null",businessUserDTO,HttpStatus.CREATED);
 
     }
 

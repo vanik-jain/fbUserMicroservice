@@ -15,5 +15,6 @@ public class BusinessUserDTO
     private String status;
     private String businessName;
     private String businessImageUrl;
+    private List<String>userFollowing;
     private String email;
 }

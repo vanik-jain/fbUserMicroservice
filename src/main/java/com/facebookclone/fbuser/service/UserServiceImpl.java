@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
         feedClient.createNewFeed(newUserDataDto);
 
         try {
-            kafkaTemplate.send("facebook", (new ObjectMapper()).writeValueAsString(searchDTO));
+            kafkaTemplate.send("facebook1", (new ObjectMapper()).writeValueAsString(searchDTO));
         } catch (JsonProcessingException e)
         {
             e.printStackTrace();
@@ -172,9 +172,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BusinessUser findBusinessUserById(String BusinessUserId)
+    public BusinessUser findBusinessUserById(String adminId)
     {
-        return businessUserRepository.findByAdminId(BusinessUserId);
+        return businessUserRepository.findByAdminId(adminId);
     }
 
     @Override

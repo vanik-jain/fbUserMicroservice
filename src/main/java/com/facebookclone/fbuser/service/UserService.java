@@ -18,7 +18,7 @@ public interface UserService
     void acceptFriendRequest(FriendRequestDTO friendRequestDTO);
     List<User>getFriendList(String userId);
     User findUserById(String userId);
-    BusinessUser findBusinessUserById(String BusinessUserId);
+    BusinessUser findBusinessUserById(String adminId);
     List<User>getMutualFriends(FriendRequestDTO friendRequestDTO);
 
 

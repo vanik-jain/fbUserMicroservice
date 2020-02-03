@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(name = "jwt", url = "172.16.20.32:8080/jwt")
+@FeignClient(name = "jwt", url = "172.16.20.32:8080/authentication/jwt")
 @CrossOrigin(allowedHeaders = "*", origins = "*")
 public interface LoginClient {
     @PostMapping("/getUserDetails")
