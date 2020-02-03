@@ -3,10 +3,7 @@ package com.facebookclone.fbuser.controller;
 
 import com.facebookclone.fbuser.collections.BusinessUser;
 import com.facebookclone.fbuser.collections.User;
-import com.facebookclone.fbuser.dto.BusinessUserDTO;
-import com.facebookclone.fbuser.dto.TokenRequest;
-import com.facebookclone.fbuser.dto.UserDTO;
-import com.facebookclone.fbuser.dto.FriendRequestDTO;
+import com.facebookclone.fbuser.dto.*;
 import com.facebookclone.fbuser.response.BaseResponse;
 import com.facebookclone.fbuser.response.TokenResponse;
 import com.facebookclone.fbuser.service.UserService;
@@ -81,9 +78,9 @@ public class UserController {
 
 
     @PostMapping("/getMutualFriends")
-    BaseResponse<List<User>> getMutualFriends(@RequestBody FriendRequestDTO friendRequestDTO) {
-        List<User> mutualFriendsList = userService.getMutualFriends(friendRequestDTO);
-        return new BaseResponse<>(true, null, mutualFriendsList, HttpStatus.CREATED);
+    BaseResponse<MutualFriendDTO> getMutualFriends(@RequestBody FriendRequestDTO friendRequestDTO) {
+        MutualFriendDTO mutualFriendDTO = userService.getMutualFriends(friendRequestDTO);
+        return new BaseResponse<>(true, null, mutualFriendDTO, HttpStatus.CREATED);
 
     }
 

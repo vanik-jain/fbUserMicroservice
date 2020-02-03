@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 
 
-
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -51,8 +50,7 @@ public class UserServiceImpl implements UserService {
 
         try {
             kafkaTemplate.send("facebook", (new ObjectMapper()).writeValueAsString(searchDTO));
-        } catch (JsonProcessingException e)
-        {
+        } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
 
@@ -75,22 +73,18 @@ public class UserServiceImpl implements UserService {
 
         Optional<User> optionalUser = userRepository.findById(friendRequestDTO.getUserId());
         Optional<User> optionalFriend = userRepository.findById(friendRequestDTO.getFriendId());
-        User user =null;
+        User user = null;
         User friend = null;
 
         if (optionalUser.isPresent() && optionalFriend.isPresent()) {
             user = optionalUser.get();
             friend = optionalFriend.get();
-            if (user.getDisplayType().equals("public"))
-            {
+            if (user.getDisplayType().equals("public")) {
 
 
-
-                if( user.getFriendIds() != null)
-                {
+                if (user.getFriendIds() != null) {
                     user.getFriendIds().add(friendRequestDTO.getFriendId());
-                }
-                else {
+                } else {
 
                     HashSet<String> friendIds = new HashSet<>();
                     friendIds.add(friendRequestDTO.getUserId());
@@ -98,11 +92,9 @@ public class UserServiceImpl implements UserService {
                 }
 
 
-                if( friend.getFriendIds() != null)
-                {
+                if (friend.getFriendIds() != null) {
                     friend.getFriendIds().add(friendRequestDTO.getUserId());
-                }
-                else {
+                } else {
 
                     HashSet<String> friendIds = new HashSet<>();
                     friendIds.add(friendRequestDTO.getUserId());
@@ -154,10 +146,13 @@ public class UserServiceImpl implements UserService {
         }
         HashSet<String> friendIDs = user.getFriendIds();
         List<User> userList = new ArrayList<>();
-         friendIDs.remove("");
-        Iterable<User> iterable = userRepository.findAllById(friendIDs);
-        iterable.forEach(userList::add);
-        return userList;
+        friendIDs.remove("");
+        if(friendIDs.size()!=0) {
+            Iterable<User> iterable = userRepository.findAllById(friendIDs);
+            iterable.forEach(userList::add);
+            return userList;
+        }
+        return null;
     }
 
     @Override
@@ -172,22 +167,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BusinessUser findBusinessUserById(String BusinessUserId)
-    {
+    public BusinessUser findBusinessUserById(String BusinessUserId) {
         return businessUserRepository.findByAdminId(BusinessUserId);
     }
 
     @Override
-    public List<User> getMutualFriends(FriendRequestDTO friendRequestDTO) {
-
+    public MutualFriendDTO getMutualFriends(FriendRequestDTO friendRequestDTO) {
+        MutualFriendDTO mutualFriendDTO = new MutualFriendDTO();
         Optional<User> optionalUser = userRepository.findById(friendRequestDTO.getUserId());
         Optional<User> optionalFriend = userRepository.findById(friendRequestDTO.getFriendId());
         User user = new User();
         User friend = new User();
         Boolean isFriend = false;
 
-        if (optionalUser.isPresent() && optionalFriend.isPresent())
-        {
+        if (optionalUser.isPresent() && optionalFriend.isPresent()) {
             user = optionalUser.get();
             friend = optionalFriend.get();
         }
@@ -195,18 +188,19 @@ public class UserServiceImpl implements UserService {
         HashSet<String> userListIds = user.getFriendIds();
 
 
-       if (userListIds.contains(friendRequestDTO.getFriendId()))
-       {
-           isFriend= true;
-       }
+        if (userListIds.contains(friendRequestDTO.getFriendId())) {
+            isFriend = true;
+        }
 
         HashSet<String> friendListIds = friend.getFriendIds();
         userListIds.retainAll(friendListIds);
         List<User> userList = new ArrayList<>();
         Iterable<User> iterable = userRepository.findAllById(userListIds);
         iterable.forEach(userList::add);
-        return userList;
+        mutualFriendDTO.setUserList(userList);
+        mutualFriendDTO.setIsFriend(isFriend);
 
+        return mutualFriendDTO;
     }
 
 
